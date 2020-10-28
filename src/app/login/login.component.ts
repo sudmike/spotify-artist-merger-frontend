@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    window.location.href = 'http://localhost:3000/api/login';
+  }
 
   ngOnInit(): void {
   }
