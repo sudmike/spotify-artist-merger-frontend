@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { SpotifyWebService } from '../../spotify-web.service';
 
 
 @Component({
@@ -8,12 +9,14 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class CallbackComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute) {  }
+  constructor(private route: ActivatedRoute,
+              private spotifyService: SpotifyWebService) {  }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(queryParameters => {
-      if (queryParameters.code) {
-        // insert spotify activation
+    this.route.queryParams.subscribe(qp => {
+      if (qp.accessToken) {
+        console.log('Access Token: ' + qp.accessToken);
+        this.spotifyService.setAccessToken(qp.accessToken);
       }
     });
   }
