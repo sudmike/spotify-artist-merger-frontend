@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 /* Import Components */
 import { AppComponent } from './app.component';
@@ -13,6 +14,7 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { CallbackComponent } from './login/callback/callback.component';
+import { ErrorHandlingComponent } from './create-playlist/error-handling/error-handling.component';
 
 /* Define Routes */
 const appRoutes: Routes = [
@@ -33,7 +35,8 @@ const appRoutes: Routes = [
     LoginComponent,
     PageNotFoundComponent,
     LandingPageComponent,
-    CallbackComponent
+    CallbackComponent,
+    ErrorHandlingComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,7 @@ const appRoutes: Routes = [
   exports: [
     RouterModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
