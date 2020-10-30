@@ -17,7 +17,7 @@ export class SpotifyWebService {
   }
 
 
-  async checkArtist(artist): Promise<string|Error> {
+  async checkArtist(artist): Promise<{artistName: string, imageURL: string}|Error> {
     // artist input field left empty
     if (artist === undefined || artist === '') { return Promise.reject(Error('Input Field left empty')); }
 
@@ -31,7 +31,7 @@ export class SpotifyWebService {
           else{
              return getThisIsPlaylistId(this.spotifyApi, data.artists.items[0].name, true)
               .then(() => {
-                return data.artists.items[0].name; // return correct name of artist
+                return {artistName: data.artists.items[0].name, imageURL: data.artists.items[0].images[1].url};
               })
               .catch(err => {
                 return Promise.reject(err);
