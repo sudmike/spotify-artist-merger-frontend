@@ -13,6 +13,7 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { CallbackComponent } from './login/callback/callback.component';
+import { SubmitComponent } from './create-playlist/submit/submit.component';
 
 /* Define Routes */
 const appRoutes: Routes = [
@@ -33,7 +34,8 @@ const appRoutes: Routes = [
     LoginComponent,
     PageNotFoundComponent,
     LandingPageComponent,
-    CallbackComponent
+    CallbackComponent,
+    SubmitComponent
   ],
   imports: [
     BrowserModule,
