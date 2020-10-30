@@ -100,7 +100,6 @@ async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string, 
 
 
 
-/* Necessary Functions for Playlist Creation  */
 function generateTitle(artists: string[]): string{
     let playlistName = 'These are ';
 
@@ -114,9 +113,7 @@ function generateTitle(artists: string[]): string{
 function generateDescription(artists: string[]): string{
     artists = prepArtistsForDescription(artists);
 
-    let playlistDescription = 'This Playlist was auto-generated! ';
-
-    playlistDescription += 'Artists are ' + artists[0];
+    let playlistDescription = 'This Playlist was auto-generated! ' + 'Artists are ' + artists[0];
     for (let i = 1; i < artists.length - 1; i++){
         playlistDescription += ', ' + artists[i];
     }
@@ -124,6 +121,7 @@ function generateDescription(artists: string[]): string{
 
     return playlistDescription;
 }
+
 
 async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
   return spotifyApi.getMe()
@@ -141,39 +139,32 @@ async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
 /* Sort artists and take Commas out of names to prevent confusion of delimiters. Eg 'Tyler, the creator' to 'Tyler the creator' */
 function prepArtistsForDescription(artists: string[]): string[]{
     artists.sort();
-
-    for (let artist of artists){
-        artist = artist.replace(/,/g, ''); // remove all commas
-    }
+    for (let artist of artists){ artist = artist.replace(/,/g, ''); } // remove all comments
     return artists;
 }
 
 
-async function generateSongList(spotifyApi: SpotifyWebApiJs,
-                                artists: string[],
-                                nrOfSongs = 20): Promise<string[]|Error>
-{
+async function generateSongList(spotifyApi: SpotifyWebApiJs, artists: string[],
+                                nrOfSongs = 20): Promise<string[]|Error> {
     let songList = [];
 
-    // create song List from each artists This Is playlist
+    // create song List from each artist's This Is playlist and merge them
     for (const artist of artists){
         songList = songList.concat(await extractTracksOfArtist(spotifyApi, artist, nrOfSongs)
             .catch(err => Promise.reject(err)));
     }
-
     return shuffleArray(songList);
 }
 
-async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs,
-                                     artist: string,
+
+async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs, artist: string,
                                      nrOfSongs: number): Promise<string[]|Error>{
     const songURIs = [];
 
     // get the 'This is <artist>' playlist ID to then search for playlist
     return getThisIsPlaylistId(spotifyApi, artist)
         .then(playlistId => {
-
-            // get Playlist with all tracks
+            // now get Playlist with all tracks
             return spotifyApi.getPlaylist(playlistId as string)
                 .then(data => {
                   // Transfer all Track URIs != null from Playlist to array
@@ -199,7 +190,7 @@ async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs,
 
 function trimSongSelection(songList: string[], nrOfSongs = songList.length / 3): string[]{
 
-    // No need to go through if all will be returned anyway
+    // No need to go through, if all will be returned anyway
     if (songList.length <= nrOfSongs) { return songList; }
     else{
         // Split Songs into categories based on popularity
