@@ -16,6 +16,7 @@ export class ArtistInputComponent implements OnInit {
 
   onBtnClick(): void{
     this.artistSubmitEvent.emit(this.artistName);
+    this.artistName = '';
   }
 
 }
