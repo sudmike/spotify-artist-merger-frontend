@@ -1,7 +1,7 @@
 <p>create-playlist works!</p>
 <div class="container">
   <div class="col-xs-12">
-    <app-artist-input></app-artist-input>
+    <app-artist-input (artistSubmitEvent)="onArtistInputTriggered($event)"></app-artist-input>
   </div>
   <div class="col-xs-12">
     <app-artist-output></app-artist-output>
