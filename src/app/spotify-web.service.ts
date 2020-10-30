@@ -38,8 +38,9 @@ export class SpotifyWebService {
               });
           }
       })
-      .catch(() => {
+      .catch(err => {
         // return artist fetch error
+        console.log('Error in spotify-web.service.ts', err);
         return Promise.reject(Error ('Could not search for artist'));
         // return Promise.reject(err);
       });
@@ -57,14 +58,18 @@ export class SpotifyWebService {
         if (songList.length > 0){
           this.spotifyApi.addTracksToPlaylist(data.id, songList)
             /*return Track Addition Error redirect*/
-            .catch(() => Promise.reject(Error ('Error adding Tracks to Playlist')));
+            .catch(err => {
+              console.log('Error in spotify-web.service.ts', err);
+              Promise.reject(Error ('Error adding Tracks to Playlist'));
+            });
         }
 
         // return Playlist ID
         return data.id;
       })
-      .catch(() => {
+      .catch(err => {
         /*return Playlist Creation Error redirect*/
+        console.log('Error in spotify-web.service.ts', err);
         return Promise.reject(Error ('Error creating Playlist'));
       });
   }
@@ -86,8 +91,9 @@ async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string, 
       }
       return data.playlists.items[0].id; // return Playlist ID
     })
-    .catch(() => {
+    .catch(err => {
       /*return Artist Page Retrieval error redirect*/
+      console.log('Error in spotify-web.service.ts', err);
       return Promise.reject(Error ('Could not find Artists Spotify Page'));
     });
 }
@@ -124,8 +130,9 @@ async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
     .then(data => {
       return data.id;
     })
-    .catch(() => {
+    .catch(err => {
       /*return User Fetch Error redirect*/
+      console.log('Error in spotify-web.service.ts', err);
       return Promise.reject(Error ('Error fetching UserId'));
     });
 }
@@ -177,9 +184,10 @@ async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs,
                   // return filtered array filled with Track URIs
                   return trimSongSelection(songURIs, nrOfSongs);
                 })
-                .catch(() => {
-                    /*return Playlist Retrieval Error redirect*/
-                    return Promise.reject(Error('Error retrieving a Playlist'));
+                .catch(err => {
+                  /*return Playlist Retrieval Error redirect*/
+                  console.log('Error in spotify-web.service.ts', err);
+                  return Promise.reject(Error('Error retrieving a Playlist'));
                 });
         })
         .catch(err => {
