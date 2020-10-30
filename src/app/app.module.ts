@@ -16,11 +16,12 @@ import { CallbackComponent } from './login/callback/callback.component';
 
 /* Define Routes */
 const appRoutes: Routes = [
-  { path: '', redirectTo: 'create-playlist', pathMatch: 'full' }, // temporary redirect
+  { path: '', redirectTo: 'login', pathMatch: 'full' }, // temporary redirect
   { path: 'create-playlist', component: CreatePlaylistComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'login/callback', component: CallbackComponent}
-  // { path: '**', component: PageNotFoundComponent }
+  { path: 'login/callback', component: CallbackComponent},
+  { path: 'page-not-found', component: PageNotFoundComponent},
+  { path: '**', redirectTo: 'page-not-found', pathMatch: 'full' }
 ];
 
 @NgModule({
