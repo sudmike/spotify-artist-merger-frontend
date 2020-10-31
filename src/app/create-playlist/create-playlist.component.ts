@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Artist } from '../shared/artist.model';
 import { ArtistOutputComponent } from './artist-output/artist-output.component';
 import { SpotifyWebService } from '../spotify-web.service';
+import {SubmitComponent} from './submit/submit.component';
+import {ArtistInputComponent} from './artist-input/artist-input.component';
 
 @Component({
   selector: 'app-create-playlist',
@@ -27,6 +29,15 @@ export class CreatePlaylistComponent implements OnInit {
   constructor(private spotifyService: SpotifyWebService) {  }
 
   ngOnInit(): void {
+  }
+  onSubmit(): void{
+    this.spotifyService.generatePlaylistAndFill( this.outputTable.submitArtists() )
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 

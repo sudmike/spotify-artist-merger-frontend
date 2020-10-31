@@ -1,4 +1,4 @@
-<input type="text" [(ngModel)]="artistName" class="form-control">
+<input (keyup.enter)="onBtnClick()" type="text" [(ngModel)]="artistName" class="form-control">
 <button (click)="onBtnClick()" class="btn btn-primary">add artist</button>
 
 
