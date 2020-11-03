@@ -2,17 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Artist } from '../shared/artist.model';
 import { ArtistOutputComponent } from './artist-output/artist-output.component';
 import { SpotifyWebService } from '../spotify-web.service';
-import {ErrorHandlingComponent} from './error-handling/error-handling.component';
+import { ErrorHandlingComponent } from './error-handling/error-handling.component';
 
 @Component({
   selector: 'app-create-playlist',
   templateUrl: './create-playlist.component.html',
 })
+
 export class CreatePlaylistComponent implements OnInit {
   @ViewChild(ArtistOutputComponent, {static: false}) outputTable: ArtistOutputComponent;
-  @ViewChild(ErrorHandlingComponent, {static: false}) errorPanel: ErrorHandlingComponent;
-
-  errorPresent = false;
+  @ViewChild(ErrorHandlingComponent, {static: false}) errorMessage: ErrorHandlingComponent;
 
   constructor(private spotifyService: SpotifyWebService) {  }
 
@@ -25,11 +24,10 @@ export class CreatePlaylistComponent implements OnInit {
       })
   .catch(err => {
       console.log(err);
-      this.errorPanel.setError((err as Error).message);
-      this.errorPresent = true;
-      setTimeout(() => { this.errorPresent = false; }, 4000);
+      this.errorMessage.setError((err as Error).message);
     });
   }
+
 
   onSubmit(): void{
     this.spotifyService.generatePlaylistAndFill(this.outputTable.submitArtists())
