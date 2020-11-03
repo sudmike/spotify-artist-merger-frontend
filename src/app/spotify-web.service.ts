@@ -17,7 +17,7 @@ export class SpotifyWebService {
   }
 
 
-  async checkArtist(artist): Promise<{artistName: string, imageURL: string}|Error> {
+  async checkArtist(artist): Promise<{artistName: string, imageURL: string}> {
     // artist input field left empty
     if (artist === undefined || artist === '') { return Promise.reject(Error('Input Field left empty')); }
 

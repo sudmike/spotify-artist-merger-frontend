@@ -7,11 +7,15 @@ import { Component, OnInit } from '@angular/core';
 
 export class ErrorHandlingComponent implements OnInit {
 
-  error = 'This is an Error';
+  errorText = 'This is an Error';
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  setError(errorText: string): void{
+    this.errorText = errorText;
   }
 
 }

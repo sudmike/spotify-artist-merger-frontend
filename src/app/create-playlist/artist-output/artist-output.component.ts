@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Artist} from '../../shared/artist.model';
 
 @Component({
@@ -17,6 +17,7 @@ export class ArtistOutputComponent implements OnInit {
   addArtist(artist: Artist): void {
     this.artists.push(artist);
   }
+
   submitArtists(): string[]{
     const artistNames: string[] = [];
     for (const artist of this.artists){

@@ -13,6 +13,8 @@ import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { CallbackComponent } from './login/callback/callback.component';
+import { SubmitComponent } from './create-playlist/submit/submit.component';
+import { ErrorHandlingComponent } from './create-playlist/error-handling/error-handling.component';
 
 /* Define Routes */
 const appRoutes: Routes = [
@@ -33,7 +35,9 @@ const appRoutes: Routes = [
     LoginComponent,
     PageNotFoundComponent,
     LandingPageComponent,
-    CallbackComponent
+    CallbackComponent,
+    SubmitComponent,
+    ErrorHandlingComponent
   ],
   imports: [
     BrowserModule,

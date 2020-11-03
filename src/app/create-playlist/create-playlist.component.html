@@ -9,4 +9,7 @@
   <div class="col-xs-12">
     <app-submit (submitPlaylist)="onSubmit()"></app-submit>
   </div>
+  <div class="col-xs-12">
+    <app-error-handling [hidden]="!errorPresent"></app-error-handling>
+  </div>
 </div>
