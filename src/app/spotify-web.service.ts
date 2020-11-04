@@ -19,14 +19,14 @@ export class SpotifyWebService {
 
   async checkArtist(artist): Promise<{artistName: string, imageURL: string}> {
     // artist input field left empty
-    if (artist === undefined || artist === '') { return Promise.reject(Error('Input Field left empty')); }
+    if (artist === undefined || artist === '') { return Promise.reject(Error ('Input Field left empty! Try typing something in the input field and press enter.')); }
 
     // search Spotify with user input and return correct name of artist if resolved and error if rejected
     return this.spotifyApi.searchArtists(artist, {limit: 1, offset: 0})
       .then(data => {
         if (data.artists.items.length === 0){
             /*return Artist Not Found Error*/
-            return Promise.reject(Error ('Could not find Artist'));
+            return Promise.reject(Error ('Could not find the Artist you searched for! Try a different artist.'));
           }
           else{
              return getThisIsPlaylistId(this.spotifyApi, data.artists.items[0].name, true)
@@ -42,7 +42,7 @@ export class SpotifyWebService {
         // return artist fetch error
         console.log('Error in spotify-web.service.ts', err);
         if (err instanceof Error) { return Promise.reject(err); } // forward error from .then
-        else { return Promise.reject(Error ('Could not search for artist')); }
+        else { return Promise.reject(Error ('Could not search for artist! Try logging back in by refreshing the page.')); }
       });
   }
 
@@ -59,8 +59,8 @@ export class SpotifyWebService {
           this.spotifyApi.addTracksToPlaylist(data.id, songList)
             /*return Track Addition Error redirect*/
             .catch(err => {
-              console.log('Error in spotify-web.service.ts', err);
-              Promise.reject(Error ('Error adding Tracks to Playlist'));
+              console.log(err);
+              Promise.reject(Error ('Error adding Tracks to Playlist! Try submitting the playlist again.'));
             });
         }
 
@@ -69,8 +69,8 @@ export class SpotifyWebService {
       })
       .catch(err => {
         /*return Playlist Creation Error redirect*/
-        console.log('Error in spotify-web.service.ts', err);
-        return Promise.reject(Error ('Error creating Playlist'));
+        console.log(err);
+        return Promise.reject(Error ('Error creating Playlist! Try submitting the playlist again.'));
       });
   }
 
@@ -86,15 +86,15 @@ async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string, 
       if (check){ // check that owner of This Is playlist is spotify
         if (data.playlists.items[0].owner.id !== 'spotify'){
           /*return Missing Artist Page Error redirect */ // better check in the beginning
-          return Promise.reject(Error ('Artist does not have a \'This is\' Playlist'));
+          return Promise.reject(Error ('Artist does not have a \'This is\' Playlist! Try a different artist or check for typos in your input.'));
         }
       }
       return data.playlists.items[0].id; // return Playlist ID
     })
     .catch(err => {
       /*return Artist Page Retrieval error redirect*/
-      console.log('Error in spotify-web.service.ts', err);
-      return Promise.reject(Error ('Could not find Artists Spotify Page'));
+      console.log(err);
+      return Promise.reject(Error ('Could not find Artists Spotify Page! Try a different artist or check for typos in your input'));
     });
 }
 
@@ -131,7 +131,7 @@ async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
     .catch(err => {
       /*return User Fetch Error redirect*/
       console.log('Error in spotify-web.service.ts', err);
-      return Promise.reject(Error ('Error fetching UserId'));
+      return Promise.reject(Error ('Error fetching UserId! Try logging back in by refreshing the page.'));
     });
 }
 
@@ -177,8 +177,8 @@ async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs, artist: string
                 })
                 .catch(err => {
                   /*return Playlist Retrieval Error redirect*/
-                  console.log('Error in spotify-web.service.ts', err);
-                  return Promise.reject(Error('Error retrieving a Playlist'));
+                  console.log(err);
+                  return Promise.reject(Error ('Error retrieving a Playlist! Try logging back in by refreshing the page.'));
                 });
         })
         .catch(err => {
