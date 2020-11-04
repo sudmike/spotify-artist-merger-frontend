@@ -21,17 +21,18 @@ export class ArtistOutputComponent implements OnInit {
     return true;
   }
 
-  submitArtists(): string[]{
+  submitArtists(): {artistNames: string[], playlistIDs: string[]}{
     // Check that there are at least two artists
     if (this.artists.length >= 2){ this.submitEligibility = {eligible: true, errorText: ''}; }
     else {
       this.submitEligibility =
       {eligible: false, errorText: 'Not enough artists! You need at least two artists to create a playlist.'};
-      return [];
+      return {artistNames: ['-1'], playlistIDs: ['-1']};
     }
 
-    const artistNames = this.artists.map(a => a.name);
+    const names = this.artists.map(a => a.name);
+    const pIDs = this.artists.map(a => a.playlistID);
     this.artists = [];
-    return artistNames;
+    return { artistNames: names, playlistIDs: pIDs };
   }
 }
