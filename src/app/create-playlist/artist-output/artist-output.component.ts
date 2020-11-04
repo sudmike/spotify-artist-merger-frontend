@@ -8,14 +8,16 @@ import {Artist} from '../../shared/artist.model';
 export class ArtistOutputComponent implements OnInit {
   artists: Artist[] = [];
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  addArtist(artist: Artist): void {
-    this.artists.push(artist);
+  addArtist(newArtist: Artist): boolean { // returns true if newArtist added
+    for (const compareArtist of this.artists){ // check if already included
+      if (compareArtist.name === newArtist.name){ return false; }
+    }
+    this.artists.push(newArtist);
+    return true;
   }
 
   submitArtists(): string[]{

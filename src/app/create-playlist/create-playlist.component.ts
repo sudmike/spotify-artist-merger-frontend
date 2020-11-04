@@ -20,7 +20,10 @@ export class CreatePlaylistComponent implements OnInit {
       .then(data => {
         console.log(data);
         const dataSafe = data; // as {artistName: string, imageURL: string};
-        this.outputTable.addArtist(new Artist(dataSafe.artistName , dataSafe.imageURL));
+        if (
+          ! this.outputTable.addArtist(new Artist(dataSafe.artistName , dataSafe.imageURL))
+        )
+        { this.errorMessage.setError('Artist was already added! The artist you want to add is already included.'); }
       })
   .catch(err => {
       console.log(err);
