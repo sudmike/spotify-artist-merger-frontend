@@ -8,7 +8,7 @@ import SpotifyWebApiJs = SpotifyWebApi.SpotifyWebApiJs;
 
 export class SpotifyWebService {
 
-  spotifyApi = new SpotifyWebApi();
+  private spotifyApi = new SpotifyWebApi();
 
   setAccessToken(accessToken: string): void{
     this.spotifyApi.setAccessToken(accessToken);
@@ -17,7 +17,7 @@ export class SpotifyWebService {
   }
 
 
-  async checkArtist(artist): Promise<{artistName: string, imageURL: string}> {
+  async checkArtist(artist): Promise<{artistName: string, imageURL: string, playlistID: string}> {
     // artist input field left empty
     if (artist === undefined || artist === '') { return Promise.reject(Error ('Input Field left empty! Try typing something in the input field and press enter.')); }
 
@@ -29,9 +29,9 @@ export class SpotifyWebService {
             return Promise.reject(Error ('Could not find the Artist you searched for! Try a different artist.'));
           }
           else{
-             return getThisIsPlaylistId(this.spotifyApi, data.artists.items[0].name, true)
-              .then(() => {
-                return {artistName: data.artists.items[0].name, imageURL: data.artists.items[0].images[1].url};
+             return getThisIsPlaylistId(this.spotifyApi, data.artists.items[0].name)
+              .then(pID => {
+                return {artistName: data.artists.items[0].name, imageURL: data.artists.items[0].images[1].url, playlistID: pID};
               })
               .catch(err => {
                 return Promise.reject(err);
@@ -47,13 +47,13 @@ export class SpotifyWebService {
   }
 
 
-  async generatePlaylistAndFill(artists: string[], title = generateTitle(artists)): Promise<string|Error>{
+  async generatePlaylist(artistNames: string[], playlistIDs: string[], title = generateTitle(artistNames)): Promise<string>{
     console.log('Title: ', title);
-    console.log('Description: ', generateDescription(artists));
-    const songList = await generateSongList(this.spotifyApi, artists).catch(err => Promise.reject(err)) as string[];
+    console.log('Description: ', generateDescription(artistNames));
+    const songList = await generateSongList(this.spotifyApi, playlistIDs).catch(err => Promise.reject(err));
 
-    return await this.spotifyApi.createPlaylist(await getUsername(this.spotifyApi).catch(err => Promise.reject(err)) as string,
-      {name: title, public: false, description: generateDescription(artists)})
+    return await this.spotifyApi.createPlaylist(await getUsername(this.spotifyApi).catch(err => Promise.reject(err)),
+      {name: title, public: false, description: generateDescription(artistNames)})
       .then(data => {
         if (songList.length > 0){
           this.spotifyApi.addTracksToPlaylist(data.id, songList)
@@ -80,14 +80,13 @@ export class SpotifyWebService {
 
 /* Private Functions */
 // tslint:disable-next-line:max-line-length
-async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string, check: boolean = false): Promise<string|Error>{
+async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string): Promise<string>{
   return spotifyApi.searchPlaylists('This Is ' + artist, {limit: 1, offset: 0})
     .then(data => {
-      if (check){ // check that owner of This Is playlist is spotify
-        if (data.playlists.items[0].owner.id !== 'spotify'){
-          /*return Missing Artist Page Error redirect */ // better check in the beginning
-          return Promise.reject(Error ('Artist does not have a \'This is\' Playlist! Try a different artist or check for typos in your input.'));
-        }
+      if (data.playlists.items[0].owner.id !== 'spotify') {
+        /*return Missing Artist Page Error redirect */ // better check in the beginning
+        // tslint:disable-next-line:max-line-length
+        return Promise.reject(Error('Artist does not have a \'This is\' Playlist! Try a different artist or check for typos in your input.'));
       }
       return data.playlists.items[0].id; // return Playlist ID
     })
@@ -122,8 +121,7 @@ function generateDescription(artists: string[]): string{
     return playlistDescription;
 }
 
-
-async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
+async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string>{
   return spotifyApi.getMe()
     .then(data => {
       return data.id;
@@ -135,7 +133,6 @@ async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string|Error>{
     });
 }
 
-
 /* Sort artists and take Commas out of names to prevent confusion of delimiters. Eg 'Tyler, the creator' to 'Tyler the creator' */
 function prepArtistsForDescription(artists: string[]): string[]{
     artists.sort();
@@ -143,48 +140,40 @@ function prepArtistsForDescription(artists: string[]): string[]{
     return artists;
 }
 
-
-async function generateSongList(spotifyApi: SpotifyWebApiJs, artists: string[],
-                                nrOfSongs = 20): Promise<string[]|Error> {
+async function generateSongList(spotifyApi: SpotifyWebApiJs, playlistIDs: string[],
+                                nrOfSongs = 20): Promise<string[]> {
     let songList = [];
 
     // create song List from each artist's This Is playlist and merge them
-    for (const artist of artists){
-        songList = songList.concat(await extractTracksOfArtist(spotifyApi, artist, nrOfSongs)
+    for (const pID of playlistIDs){
+        songList = songList.concat(await extractTracksFromPlaylist(spotifyApi, pID, nrOfSongs)
             .catch(err => Promise.reject(err)));
     }
     return shuffleArray(songList);
 }
 
 
-async function extractTracksOfArtist(spotifyApi: SpotifyWebApiJs, artist: string,
-                                     nrOfSongs: number): Promise<string[]|Error>{
+async function extractTracksFromPlaylist(spotifyApi: SpotifyWebApiJs, playlistID: string,
+                                         nrOfSongs: number): Promise<string[]>{
     const songURIs = [];
 
-    // get the 'This is <artist>' playlist ID to then search for playlist
-    return getThisIsPlaylistId(spotifyApi, artist)
-        .then(playlistId => {
-            // now get Playlist with all tracks
-            return spotifyApi.getPlaylist(playlistId as string)
-                .then(data => {
-                  // Transfer all Track URIs != null from Playlist to array
-                  for (const i of data.tracks.items){
-                    if (i.track !== null) { songURIs.push(i.track.uri); }
-                  }
+    return spotifyApi.getPlaylist(playlistID)
+      .then(data => {
+        // Transfer all Track URIs != null from Playlist to array
+        for (const i of data.tracks.items) {
+          if (i.track !== null) {
+            songURIs.push(i.track.uri);
+          }
+        }
 
-                  // return filtered array filled with Track URIs
-                  return trimSongSelection(songURIs, nrOfSongs);
-                })
-                .catch(err => {
-                  /*return Playlist Retrieval Error redirect*/
-                  console.log(err);
-                  return Promise.reject(Error ('Error retrieving a Playlist! Try logging back in by refreshing the page.'));
-                });
-        })
-        .catch(err => {
-            // return rejection redirect of Function getThisIsPlaylistId
-            return Promise.reject(err);
-        });
+        // return filtered array filled with Track URIs
+        return trimSongSelection(songURIs, nrOfSongs);
+      })
+      .catch(err => {
+        /*return Playlist Retrieval Error redirect*/
+        console.log(err);
+        return Promise.reject(Error('Error retrieving a Playlist! Try logging back in by refreshing the page.'));
+      });
 }
 
 
@@ -222,7 +211,6 @@ function trimSongSelection(songList: string[], nrOfSongs = songList.length / 3):
         return songList;
     }
 }
-
 
 function shuffleArray(array: any[]): any[]{
     for (let i = array.length - 1; i > 0; i--){
