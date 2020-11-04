@@ -18,14 +18,16 @@ export class CreatePlaylistComponent implements OnInit {
   onArtistInputTriggered(artistName: string): void {
     this.spotifyService.checkArtist(artistName)
       .then(data => {
-        console.log(data);
-        if (
-          ! this.outputTable.addArtist(new Artist(data.artistName , data.imageURL, data.playlistID))
-        )
-        { this.errorMessage.setError('Artist was already added! The artist you want to add is already included.'); }
+        if ( // returns true if artist was added
+          this.outputTable.addArtist(new Artist(data.artistName , data.imageURL, data.playlistID))
+        ) {
+          console.log(data);
+        }
+        else {
+          this.errorMessage.setError('Artist was already added! The artist you want to add is already included.');
+        }
       })
   .catch(err => {
-      console.log(err);
       this.errorMessage.setError((err as Error).message);
     });
   }

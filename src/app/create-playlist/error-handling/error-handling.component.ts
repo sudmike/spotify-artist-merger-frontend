@@ -28,6 +28,7 @@ export class ErrorHandlingComponent implements OnInit {
   }
 
   setError(errorText: string): void{
+    console.log('Err: ', errorText);
     this.errorText = [errorText];
     this.errorActive = true;
     setTimeout(() => { this.errorActive = false; }, 4000);

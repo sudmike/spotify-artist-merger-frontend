@@ -40,7 +40,7 @@ export class SpotifyWebService {
       })
       .catch(err => {
         // return artist fetch error
-        console.log('Error in spotify-web.service.ts', err);
+        if (!(err instanceof Error)){ console.log(err); }
         if (err instanceof Error) { return Promise.reject(err); } // forward error from .then
         else { return Promise.reject(Error ('Could not search for artist! Try logging back in by refreshing the page.')); }
       });
@@ -92,7 +92,8 @@ async function getThisIsPlaylistId(spotifyApi: SpotifyWebApiJs, artist: string):
     })
     .catch(err => {
       /*return Artist Page Retrieval error redirect*/
-      console.log(err);
+      if (!(err instanceof Error)) { console.log(err); }
+      if (err instanceof Error) { return Promise.reject(err); }
       return Promise.reject(Error ('Could not find Artists Spotify Page! Try a different artist or check for typos in your input'));
     });
 }
@@ -128,7 +129,7 @@ async function getUsername(spotifyApi: SpotifyWebApiJs): Promise<string>{
     })
     .catch(err => {
       /*return User Fetch Error redirect*/
-      console.log('Error in spotify-web.service.ts', err);
+      console.log(err);
       return Promise.reject(Error ('Error fetching UserId! Try logging back in by refreshing the page.'));
     });
 }
