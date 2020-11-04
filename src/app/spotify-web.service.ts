@@ -41,8 +41,8 @@ export class SpotifyWebService {
       .catch(err => {
         // return artist fetch error
         console.log('Error in spotify-web.service.ts', err);
-        return Promise.reject(Error ('Could not search for artist'));
-        // return Promise.reject(err);
+        if (err instanceof Error) { return Promise.reject(err); } // forward error from .then
+        else { return Promise.reject(Error ('Could not search for artist')); }
       });
   }
 
