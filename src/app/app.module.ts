@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /* Import Components */
 import { AppComponent } from './app.component';
@@ -14,6 +15,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { CallbackComponent } from './login/callback/callback.component';
 import { SubmitComponent } from './create-playlist/submit/submit.component';
+import { ErrorHandlingComponent } from './create-playlist/error-handling/error-handling.component';
 
 /* Define Routes */
 const appRoutes: Routes = [
@@ -35,13 +37,15 @@ const appRoutes: Routes = [
     PageNotFoundComponent,
     LandingPageComponent,
     CallbackComponent,
-    SubmitComponent
+    SubmitComponent,
+    ErrorHandlingComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(appRoutes),
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   exports: [
     RouterModule

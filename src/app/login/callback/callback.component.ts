@@ -18,7 +18,7 @@ export class CallbackComponent implements OnInit {
       if (qp.accessToken) {
         console.log('Access Token: ' + qp.accessToken);
         this.spotifyService.setAccessToken(qp.accessToken);
-        this.router.navigate(['create-playlist']).catch(err => {console.log(err); });
+        this.router.navigate(['create-playlist']);
       }
     });
   }
