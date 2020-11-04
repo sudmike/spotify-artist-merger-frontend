@@ -7,6 +7,7 @@ import {Artist} from '../../shared/artist.model';
 })
 export class ArtistOutputComponent implements OnInit {
   artists: Artist[] = [];
+  submitEligibility: {eligible: boolean, errorText: string};
 
   constructor() {}
 
@@ -21,10 +22,15 @@ export class ArtistOutputComponent implements OnInit {
   }
 
   submitArtists(): string[]{
-    const artistNames: string[] = [];
-    for (const artist of this.artists){
-      artistNames.push(artist.name);
+    // Check that there are at least two artists
+    if (this.artists.length >= 2){ this.submitEligibility = {eligible: true, errorText: ''}; }
+    else {
+      this.submitEligibility =
+      {eligible: false, errorText: 'Not enough artists! You need at least two artists to create a playlist.'};
+      return [];
     }
+
+    const artistNames = this.artists.map(a => a.name);
     this.artists = [];
     return artistNames;
   }

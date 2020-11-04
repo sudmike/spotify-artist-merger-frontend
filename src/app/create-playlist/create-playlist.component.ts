@@ -33,9 +33,15 @@ export class CreatePlaylistComponent implements OnInit {
 
 
   onSubmit(): void{
-    this.spotifyService.generatePlaylistAndFill(this.outputTable.submitArtists())
-      .then(r => { console.log(r); } )
-      .catch(err => { console.log(err); });
+    const artistsToSubmit = this.outputTable.submitArtists();
+    if (this.outputTable.submitEligibility.eligible){
+      this.spotifyService.generatePlaylistAndFill(artistsToSubmit)
+        .then(r => { console.log(r); } )
+        .catch(err => { console.log(err); });
+    }
+    else {
+      this.errorMessage.setError(this.outputTable.submitEligibility.errorText);
+    }
   }
 
   ngOnInit(): void {
